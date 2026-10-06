@@ -1,0 +1,626 @@
+{
+ "deliverables": {
+  "brief": {
+   "sections": [
+    {
+     "kinds": [
+      "goal"
+     ],
+     "title": "Goal"
+    },
+    {
+     "kinds": [
+      "person",
+      "role",
+      "org"
+     ],
+     "title": "People and roles"
+    },
+    {
+     "kinds": [
+      "dataset",
+      "tool"
+     ],
+     "sources": true,
+     "title": "Data and sources"
+    },
+    {
+     "kinds": [
+      "process",
+      "step"
+     ],
+     "title": "Processes"
+    },
+    {
+     "kinds": [
+      "constraint"
+     ],
+     "title": "Constraints"
+    },
+    {
+     "decisions": true,
+     "title": "Active decisions"
+    },
+    {
+     "gaps": true,
+     "title": "Open points"
+    }
+   ],
+   "title": "Topic brief"
+  }
+ },
+ "description": "On by default: people, goals, data, processes, constraints, deliverables, metrics and claims.",
+ "dimensions": {
+  "constraints": {
+   "label": "Constraints",
+   "stage": 5,
+   "target": 2
+  },
+  "data": {
+   "label": "Data and sources",
+   "stage": 2,
+   "target": 3
+  },
+  "deliverables": {
+   "label": "Deliverables",
+   "stage": 6,
+   "target": 1
+  },
+  "people": {
+   "label": "People and roles",
+   "stage": 1,
+   "target": 3
+  },
+  "process": {
+   "label": "Processes",
+   "stage": 4,
+   "target": 2
+  }
+ },
+ "extends": [
+  "core"
+ ],
+ "kind_map": [],
+ "kinds": {
+  "claim": {
+   "aliases": [],
+   "boost": 0,
+   "card": false,
+   "description": "A statement someone made that is not yet settled.",
+   "dimension": "questions",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "basis": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Claim",
+   "plural": "claims",
+   "priority": 3,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.basis"
+   ],
+   "visibility": "shared"
+  },
+  "constraint": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A rule, limit or requirement that shapes the work.",
+   "dimension": "constraints",
+   "expected": [],
+   "expects": [
+    {
+     "ask": "What does {name} limit or require?",
+     "dir": "out",
+     "min": 1,
+     "rel": "constrains"
+    }
+   ],
+   "fields": {
+    "type": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Constraint",
+   "plural": "constraints",
+   "priority": 5,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.type"
+   ],
+   "visibility": "shared"
+  },
+  "dataset": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "Data the topic relies on: a sheet, a log, a database, a folder.",
+   "dimension": "data",
+   "expected": [
+    "location",
+    "format"
+   ],
+   "expects": [
+    {
+     "ask": "Who keeps {name} up to date?",
+     "dir": "in",
+     "min": 1,
+     "rel": "owns"
+    }
+   ],
+   "fields": {
+    "cadence": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "format": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "location": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Dataset",
+   "plural": "datasets",
+   "priority": 7,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.location",
+    "attrs.format",
+    "attrs.cadence"
+   ],
+   "visibility": "shared"
+  },
+  "deliverable": {
+   "aliases": [],
+   "boost": 1,
+   "card": true,
+   "description": "Something produced for someone: a report, a plan, a menu, a map.",
+   "dimension": "deliverables",
+   "expected": [
+    "audience"
+   ],
+   "expects": [
+    {
+     "ask": "Who reads or uses {name}?",
+     "dir": "out",
+     "min": 1,
+     "rel": "serves"
+    }
+   ],
+   "fields": {
+    "audience": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "cadence": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "format": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Deliverable",
+   "plural": "deliverables",
+   "priority": 8,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.audience",
+    "attrs.cadence",
+    "attrs.format"
+   ],
+   "visibility": "shared"
+  },
+  "goal": {
+   "aliases": [],
+   "boost": 2,
+   "card": true,
+   "description": "What the topic is for.",
+   "dimension": "frame",
+   "expected": [],
+   "expects": [
+    {
+     "ask": "How will you know {name} is met?",
+     "dir": "in",
+     "min": 1,
+     "rel": "measures"
+    }
+   ],
+   "fields": {
+    "horizon": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "success": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Goal",
+   "plural": "goals",
+   "priority": 9,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.success",
+    "attrs.horizon"
+   ],
+   "visibility": "shared"
+  },
+  "metric": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A number that tracks progress or health.",
+   "dimension": "deliverables",
+   "expected": [
+    "unit"
+   ],
+   "expects": [
+    {
+     "ask": "What does {name} measure?",
+     "dir": "out",
+     "min": 1,
+     "rel": "measures"
+    }
+   ],
+   "fields": {
+    "cadence": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "target": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "unit": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Metric",
+   "plural": "metrics",
+   "priority": 4,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.unit",
+    "attrs.target",
+    "attrs.cadence"
+   ],
+   "visibility": "shared"
+  },
+  "org": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A team, group or organization.",
+   "dimension": "people",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "type": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Organization",
+   "plural": "organizations",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.type"
+   ],
+   "visibility": "shared"
+  },
+  "person": {
+   "aliases": [],
+   "boost": 0,
+   "card": false,
+   "description": "A named individual. Kept local: never exported or bundled.",
+   "dimension": "people",
+   "expected": [],
+   "expects": [
+    {
+     "ask": "What does {name} work on in {topic}?",
+     "dir": "out",
+     "min": 1,
+     "rel": "works_on"
+    }
+   ],
+   "fields": {},
+   "hub": false,
+   "label": "Person",
+   "plural": "people",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases"
+   ],
+   "visibility": "local"
+  },
+  "process": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A repeatable way of getting something done.",
+   "dimension": "process",
+   "expected": [],
+   "expects": [
+    {
+     "ask": "Who runs {name}?",
+     "dir": "in",
+     "min": 1,
+     "rel": "owns"
+    }
+   ],
+   "fields": {
+    "cadence": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "trigger": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Process",
+   "plural": "processes",
+   "priority": 7,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.cadence",
+    "attrs.trigger"
+   ],
+   "visibility": "shared"
+  },
+  "role": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A job or hat someone wears, independent of who fills it.",
+   "dimension": "people",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "contact_channel": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "responsibilities": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "shift": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Role",
+   "plural": "roles",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.shift",
+    "attrs.contact_channel",
+    "attrs.responsibilities"
+   ],
+   "visibility": "shared"
+  },
+  "step": {
+   "aliases": [],
+   "boost": 0,
+   "card": false,
+   "description": "One step of a process.",
+   "dimension": "process",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "order": {
+     "minimum": 1,
+     "type": "integer"
+    }
+   },
+   "hub": false,
+   "label": "Step",
+   "plural": "steps",
+   "priority": 4,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.order"
+   ],
+   "visibility": "shared"
+  }
+ },
+ "pack": "discovery",
+ "relations": {
+  "constrains": {
+   "brief": true,
+   "from": [
+    "constraint"
+   ],
+   "inverse": "constrained_by",
+   "symmetric": false,
+   "to": "*"
+  },
+  "consumes": {
+   "brief": true,
+   "from": [
+    "person",
+    "role",
+    "org",
+    "process",
+    "step",
+    "deliverable",
+    "tool"
+   ],
+   "inverse": "consumed_by",
+   "symmetric": false,
+   "to": [
+    "dataset",
+    "deliverable",
+    "tool"
+   ]
+  },
+  "decides": {
+   "brief": true,
+   "from": [
+    "person",
+    "role",
+    "org"
+   ],
+   "inverse": "decided_by",
+   "symmetric": false,
+   "to": "*"
+  },
+  "measures": {
+   "brief": true,
+   "from": [
+    "metric"
+   ],
+   "inverse": "measured_by",
+   "symmetric": false,
+   "to": [
+    "goal",
+    "process",
+    "deliverable",
+    "dataset"
+   ]
+  },
+  "member_of": {
+   "brief": true,
+   "from": [
+    "person",
+    "role",
+    "org"
+   ],
+   "inverse": "has_member",
+   "symmetric": false,
+   "to": [
+    "org",
+    "role"
+   ]
+  },
+  "owns": {
+   "brief": true,
+   "from": [
+    "person",
+    "role",
+    "org"
+   ],
+   "inverse": "owned_by",
+   "symmetric": false,
+   "to": [
+    "dataset",
+    "process",
+    "deliverable",
+    "tool"
+   ]
+  },
+  "precedes": {
+   "brief": true,
+   "from": [
+    "step",
+    "process"
+   ],
+   "inverse": "follows",
+   "symmetric": false,
+   "to": [
+    "step",
+    "process"
+   ]
+  },
+  "produces": {
+   "brief": true,
+   "from": [
+    "person",
+    "role",
+    "org",
+    "process",
+    "step",
+    "tool"
+   ],
+   "inverse": "produced_by",
+   "symmetric": false,
+   "to": [
+    "deliverable",
+    "dataset",
+    "metric"
+   ]
+  },
+  "serves": {
+   "brief": true,
+   "from": [
+    "deliverable",
+    "process",
+    "dataset",
+    "tool"
+   ],
+   "inverse": "served_by",
+   "symmetric": false,
+   "to": [
+    "goal",
+    "person",
+    "role",
+    "org"
+   ]
+  },
+  "works_on": {
+   "brief": true,
+   "from": [
+    "person",
+    "role",
+    "org"
+   ],
+   "inverse": "worked_on_by",
+   "symmetric": false,
+   "to": [
+    "goal",
+    "deliverable",
+    "process",
+    "dataset",
+    "step",
+    "metric"
+   ]
+  }
+ },
+ "title": "Discovery",
+ "version": 1
+}

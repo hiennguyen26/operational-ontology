@@ -1,0 +1,96 @@
+{
+ "deliverables": {},
+ "dimensions": {},
+ "extends": [
+  "core"
+ ],
+ "kind_map": [],
+ "kinds": {
+  "crop": {
+   "card": true,
+   "description": "A plant grown for the shared harvest.",
+   "expects": [
+    {
+     "ask": "Where is {name} grown?",
+     "dir": "out",
+     "min": 1,
+     "rel": "grown_in"
+    }
+   ],
+   "fields": {
+    "family": {
+     "type": "string"
+    },
+    "season": {
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Crop",
+   "plural": "crops",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.season"
+   ]
+  },
+  "plot": {
+   "card": true,
+   "description": "A bed or other area of ground in the garden.",
+   "fields": {
+    "size_m2": {
+     "minimum": 0,
+     "type": "number"
+    },
+    "soil": {
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Plot",
+   "plural": "plots",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.soil"
+   ]
+  }
+ },
+ "pack": "local",
+ "relations": {
+  "grown_in": {
+   "brief": true,
+   "description": "Where a crop grows.",
+   "from": [
+    "crop"
+   ],
+   "inverse": "grows",
+   "label": "grown in",
+   "symmetric": false,
+   "to": [
+    "plot"
+   ]
+  },
+  "tends": {
+   "brief": true,
+   "description": "A role or person looks after a crop or a plot.",
+   "from": [
+    "person",
+    "role"
+   ],
+   "inverse": "tended_by",
+   "label": "tends",
+   "symmetric": false,
+   "to": [
+    "crop",
+    "plot"
+   ]
+  }
+ },
+ "title": "Community garden pack",
+ "version": 1
+}

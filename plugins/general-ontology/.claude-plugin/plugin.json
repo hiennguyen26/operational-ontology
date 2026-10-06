@@ -1,0 +1,8 @@
+{
+  "name": "general-ontology",
+  "version": "0.3.0",
+  "description": "Build a topic ontology on any subject, one discovery at a time: a deterministic, standard-library Python kit with the onto CLI and a stdio MCP server (onto_* tools: one-call briefs and task context in a token budget, cards, search, gaps, interview questions, reviewed proposals, imports of other released topics), a session-start hook that starts the interview in a new topic, and six skills: onto (the router), onto-interview, onto-ingest, onto-review, onto-compose and onto-deliver.",
+  "author": {
+    "name": "general-ontology template"
+  }
+}

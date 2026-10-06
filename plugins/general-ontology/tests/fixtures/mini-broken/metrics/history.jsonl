@@ -1,0 +1,2 @@
+{"at":"2026-09-28T12:00:00Z","breakdowns":{"nodes":1},"denominators":{},"kind":"init","label":null,"missing":{"richness":"richness module not built"},"values":{"richness":null}}
+{"at":"2026-09-28T12:00:00Z","breakdowns":{"nodes":12},"denominators":{},"kind":"apply","label":null,"missing":{"richness":"richness module not built"},"values":{"richness":null}}

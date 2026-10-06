@@ -1,0 +1,105 @@
+---
+name: onto-review
+description: Review pending proposals in a topic ontology with the user and apply their verdicts. Use when the user says "review", "what's pending", "approve", "accept these", "reject that", "go through the proposals", or when onto_status shows pending proposals. Lists them by priority with onto_review, shows each numbered preview grouped by source with untrusted quotes, likely duplicates and conflicts, collects accept, draft, reject or edit verdicts (bulk all=draft for fast triage; merges and archives need an explicit yes), applies them with onto_apply confirm=true, checks nothing unrelated moved, and offers the next confirm question. Archives what rests on a changed premise in the same proposal, keeps risk ratings draft until a named owner reviews them, and explains calibration refusals.
+allowed-tools:
+  - Bash(python3 "${CLAUDE_PLUGIN_ROOT}/bin/onto" *)
+---
+
+# Review
+
+Only reviewed proposals change the ontology. Walk the user through each one, record their verdicts and apply them.
+`O` is `python3 "${CLAUDE_PLUGIN_ROOT}/bin/onto"`; prefer the `onto_*` MCP tools. Follow the reading rules of the
+**onto** skill.
+
+## 1. What is pending
+
+Call `onto_review` with no id (`O review`). It lists pending proposals by priority (the gaps they close, then their
+size), with their age and op count, grouped by source. Start with the first.
+
+## 2. Show one proposal
+
+Call `onto_review id=<prop>` (`O review <prop>`) and show its numbered preview:
+
+- each op in one line: what it adds or changes, the ids, the quote marked `[untrusted]` when it comes from an
+  ingested source;
+- `matches`: existing nodes the new one may duplicate (score and why);
+- `conflict`: a confirmed value the op would change (current and proposed);
+- the terms "not in the ontology yet" (an applied proposal lists them as `created` and `not added` instead).
+
+Group the ops by source and keep the preview short; offer the full text of a quote only when asked
+(`onto_get id=<src> lines=a-b`).
+
+## 3. Collect verdicts
+
+The four verdicts are explained in `references/verdicts.md`: `accept`, `draft`, `reject` and `edit` (a full
+replacement op, checked again).
+
+- Every op needs exactly one verdict. Ranges work: `accept=1-4,7 draft=5 reject=6`.
+- For fast triage, `all=draft` keeps everything as drafts to confirm later.
+- A `merge`, an `archive`, or an update of a confirmed record needs an explicit yes for that op. Say what it does
+  ("role:bed-captain becomes an alias of role:bed-steward and is archived").
+- A `tool` node's `invoke` (added or changed) is a command an agent may run later. Show it in full, say which
+  source it came from, and accept it only on an explicit yes for that op, never in a bulk `all=accept`. A draft
+  tool is never run (`../onto-ingest/references/refresh.md`).
+- When a verdict settles a choice, record it with `onto_decide` in the user's words.
+
+### A premise changes
+
+When a proposal archives or changes a `premise`, nothing is deleted. Run
+`onto_neighbors id=<premise> rels=["rests_on"]` (`O neighbors <premise> --rels rests_on`): what rests on it is listed
+under "underpins" (the inverse of `rests_on`). Without `rels`, the premise's own `supports` links show apart, under
+"supports". The same proposal should archive those
+records, each with a reason and the decision, and add their replacements (linked with `rests_on` to the new
+premise, when there is one). If it does not, say what is missing and propose the rest before applying. After the
+apply, `onto_gaps` lists an `archived_premise` gap on any active record that still rests on the old premise; offer
+its question.
+
+### Risks and controls
+
+With the `assessment` pack on, a `risk` carries `ratings` and a `status`.
+
+- Ratings stay draft until a named owner reviews them. Never set a risk's `status` to `reviewed` or `approved` in a
+  bulk verdict: only on the user's explicit yes for that op, and only when the risk names its `owner`.
+- A refusal or preview problem with code P23 means the change would leave a reviewed or approved risk out of
+  calibration: a residual below its inherent level without an implemented or partial control covering that
+  dimension, a drop of two or more levels without an implemented automated control, a level above the one before
+  it, a missing owner or statement, no ratings at all, or a rated dimension that lacks its impact, inherent or
+  residual level (the message names the missing measures). Archiving a control that such a risk relies on is
+  refused the same way. Nothing was written. Tell the user which rule failed and offer the fixes: raise the
+  residual, record or confirm the control, rate the missing measures, or set the risk back to draft. The preview names it before any verdict ("would be refused if
+  accepted: P23 ..."), and then offers no fast triage. A `draft` verdict does not set the risk back to draft: it
+  leaves `attrs.status` as the op wrote it. Setting it back is an edit of that op (the same op with
+  `attrs.status` set to `draft`).
+- W09 is the same finding on a draft risk: a warning that never blocks. Mention it, do not fix it silently.
+- A risk or control that no longer applies is archived with a reason and a decision, never deleted.
+
+## 4. Apply
+
+Call `onto_apply id=<prop> accept=... draft=... reject=... confirm=true` (on the CLI, `O apply <prop> --accept 1-4,7
+--draft 5 --reject 6` runs at once). Without `confirm=true` the MCP tool only previews what would change. A
+`conflict` error means the data moved since the proposal was prepared: nothing was written. A preview that says
+`stale: the data changed under op N` means the same. Propose the same draft again (it replaces the stale proposal,
+which is marked superseded) or reject it with `onto_apply id=<prop> all=reject confirm=true`.
+
+## 5. Check the result
+
+- Re-run `onto_brief` on the scope and check that the new edges landed where expected.
+- Run `git status --porcelain --untracked-files=all`. It lists new files as well as changed ones (an apply adds
+  `proposals/done/prop-*.json`, an ingest adds `sources/src-*`). Tell the user "nothing
+  unrelated moved" only when every line is a topic file this change touched: `graph/`, `proposals/`, `ledger/`,
+  `metrics/`, `sources/`, `interview/`, `packs/local.*`. Name anything else to the user, and never revert or delete
+  it yourself. In a topic that was never committed every file shows as new: say so and offer a commit so the next
+  check has a baseline, with the same guards as **onto-interview**'s commit: check that `inbox/` and `.onto/` are
+  ignored (if they are not, never run `git add -A`), run `onto scan .` (no hits), and run `git add -A && git commit
+  -m "..."` only when the status list holds topic and kit files alone. Name any other file (a `.env`, notes) to the
+  user and commit it only on their yes.
+
+## 6. Close with two lines
+
+1. What was dropped and why ("op 6 rejected: reading the log is not keeping it").
+2. What is still unknown ("nobody is named as keeper of the harvest log").
+
+## 7. Offer the next question
+
+Call `onto_next n=1` and offer its top question, usually a confirm question for a draft or the gap the review left
+open. Hand off to **onto-interview** if the user answers.

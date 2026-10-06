@@ -1,0 +1,297 @@
+{
+ "deliverables": {},
+ "description": "Always on: the topic root, vocabulary, open questions, premises, external tools and free notes.",
+ "dimensions": {
+  "frame": {
+   "label": "Frame and goal",
+   "stage": 0,
+   "target": 2
+  },
+  "questions": {
+   "label": "Open questions",
+   "stage": 7,
+   "target": 2
+  },
+  "vocabulary": {
+   "label": "Vocabulary",
+   "stage": 3,
+   "target": 5
+  }
+ },
+ "extends": [],
+ "kind_map": [],
+ "kinds": {
+  "note": {
+   "aliases": [],
+   "boost": 0,
+   "card": false,
+   "description": "A free note that fits no other kind.",
+   "dimension": null,
+   "expected": [],
+   "expects": [],
+   "fields": {},
+   "hub": false,
+   "label": "Note",
+   "plural": "notes",
+   "priority": 1,
+   "text": [
+    "name",
+    "summary",
+    "aliases"
+   ],
+   "visibility": "shared"
+  },
+  "premise": {
+   "aliases": [
+    "assumption"
+   ],
+   "boost": 0,
+   "card": true,
+   "description": "A statement taken as true. Records that rest on it change when it does.",
+   "dimension": "constraints",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "checked_on": {
+     "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Premise",
+   "plural": "premises",
+   "priority": 4,
+   "text": [
+    "name",
+    "summary",
+    "aliases"
+   ],
+   "visibility": "shared"
+  },
+  "question": {
+   "aliases": [],
+   "boost": 0,
+   "card": false,
+   "description": "An open question nobody has answered yet.",
+   "dimension": "questions",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "asked_by": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Question",
+   "plural": "questions",
+   "priority": 3,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.asked_by"
+   ],
+   "visibility": "shared"
+  },
+  "term": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A word or phrase with a meaning specific to the topic.",
+   "dimension": "vocabulary",
+   "expected": [],
+   "expects": [],
+   "fields": {
+    "abbreviation": {
+     "maxLength": 40,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Term",
+   "plural": "terms",
+   "priority": 5,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.abbreviation"
+   ],
+   "visibility": "shared"
+  },
+  "tool": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "An external tool plugged in as data: how to call it and what it returns.",
+   "dimension": "data",
+   "expected": [
+    "interface",
+    "invoke"
+   ],
+   "expects": [],
+   "fields": {
+    "inputs": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "interface": {
+     "enum": [
+      "mcp",
+      "cli",
+      "http",
+      "skill",
+      "manual"
+     ],
+     "type": "string"
+    },
+    "invoke": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "outputs": {
+     "maxLength": 300,
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Tool",
+   "plural": "tools",
+   "priority": 5,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.interface",
+    "attrs.invoke",
+    "attrs.inputs",
+    "attrs.outputs"
+   ],
+   "visibility": "shared"
+  },
+  "topic": {
+   "aliases": [],
+   "boost": 1,
+   "card": true,
+   "description": "The root of this ontology, one per topic.",
+   "dimension": "frame",
+   "expected": [],
+   "expects": [],
+   "fields": {},
+   "hub": true,
+   "label": "Topic",
+   "plural": "topics",
+   "priority": 10,
+   "text": [
+    "name",
+    "summary",
+    "aliases"
+   ],
+   "visibility": "shared"
+  }
+ },
+ "pack": "core",
+ "relations": {
+  "about": {
+   "brief": true,
+   "description": "A note, question or claim is about something.",
+   "from": "*",
+   "inverse": "mentioned_in",
+   "symmetric": false,
+   "to": "*"
+  },
+  "answers": {
+   "brief": true,
+   "from": "*",
+   "inverse": "answered_by",
+   "symmetric": false,
+   "to": [
+    "question"
+   ]
+  },
+  "contradicts": {
+   "brief": true,
+   "from": "*",
+   "inverse": "contradicts",
+   "symmetric": true,
+   "to": "*"
+  },
+  "defines": {
+   "brief": true,
+   "from": "*",
+   "inverse": "defined_by",
+   "symmetric": false,
+   "to": [
+    "term"
+   ]
+  },
+  "derived_from": {
+   "brief": false,
+   "from": "*",
+   "inverse": "source_of",
+   "symmetric": false,
+   "to": "*"
+  },
+  "part_of": {
+   "brief": true,
+   "from": "*",
+   "inverse": "has_part",
+   "symmetric": false,
+   "to": "*"
+  },
+  "refresh_with": {
+   "brief": false,
+   "description": "A source or dataset is refreshed by running a tool.",
+   "from": "*",
+   "inverse": "refreshes",
+   "symmetric": false,
+   "to": [
+    "tool"
+   ]
+  },
+  "related_to": {
+   "brief": true,
+   "from": "*",
+   "inverse": "related_to",
+   "symmetric": true,
+   "to": "*"
+  },
+  "rests_on": {
+   "brief": true,
+   "description": "A record holds only while the premise it rests on holds.",
+   "from": "*",
+   "inverse": "underpins",
+   "symmetric": false,
+   "to": [
+    "premise"
+   ]
+  },
+  "same_as": {
+   "brief": true,
+   "description": "Two ids name the same thing.",
+   "from": "*",
+   "inverse": "same_as",
+   "symmetric": true,
+   "to": "*"
+  },
+  "supports": {
+   "brief": true,
+   "from": "*",
+   "inverse": "supported_by",
+   "symmetric": false,
+   "to": "*"
+  },
+  "uses": {
+   "brief": true,
+   "from": "*",
+   "inverse": "used_by",
+   "symmetric": false,
+   "to": [
+    "tool"
+   ]
+  }
+ },
+ "title": "Core",
+ "version": 1
+}

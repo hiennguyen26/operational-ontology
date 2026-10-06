@@ -1,0 +1,22 @@
+{
+  "name": "general-ontology",
+  "owner": {
+    "name": "general-ontology template"
+  },
+  "metadata": {
+    "description": "Claude Code plugin for building a topic ontology through an interview, continuous ingestion and composition of released topics",
+    "version": "0.3.0"
+  },
+  "plugins": [
+    {
+      "name": "general-ontology",
+      "description": "The onto CLI, MCP server, session-start hook and six skills (onto, onto-interview, onto-ingest, onto-review, onto-compose and onto-deliver) for building a topic ontology one discovery at a time: interview questions ranked by gaps, sanitized sources, quote-checked proposals that a person reviews, richness that grows, and releases other topics can import. The data lives in the topic repo created by onto init.",
+      "version": "0.3.0",
+      "author": {
+        "name": "general-ontology template"
+      },
+      "source": "./plugins/general-ontology",
+      "category": "productivity"
+    }
+  ]
+}

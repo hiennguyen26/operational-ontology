@@ -1,0 +1,18 @@
+# Topic repos: the drop folder (raw, unredacted input), kit state and the built viewer stay local. The rules match at
+# any depth, so a topic made with `onto init --path <folder>` below the git root is covered too. A rule with a slash
+# inside matches from the root only, hence the second viewer rule.
+inbox/
+.onto/
+build/index.html
+**/build/index.html
+# The template's own demo notes are kit files and stay tracked.
+!/examples/*/inbox/
+# A local-scope plugin install ("for you, in this repo only") writes this file; it is per person and per machine.
+**/.claude/settings.local.json
+# Devin's local overrides (.devin/config.local.json and the like) are per person and per machine too.
+**/.devin/*.local.json
+# Python and OS junk, and Finder copies such as "notes 2.md"
+__pycache__/
+*.pyc
+.DS_Store
+* [0-9].*

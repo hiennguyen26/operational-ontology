@@ -1,0 +1,14 @@
+# Topic data is byte-exact: sources are hashed, and JSON and JSONL files are canonical bytes. Every checkout keeps LF
+# line endings whatever core.autocrlf says, and stored source texts (and kept originals) are never converted at all.
+# Every topic rule matches at any depth, so a topic made with `onto init --path <folder>` below the git root keeps
+# its hashes and its log merges too.
+* text=auto eol=lf
+**/sources/** -text
+# Append-only topic logs and the local questions (one question per line) merge by keeping both sides' lines; the
+# graph files and the local pack do not, so git shows real conflicts (AGENTS.md, "Merging topic branches", says how
+# to resolve them, and how to settle two questions added under one id).
+**/interview/log.jsonl merge=union
+**/ledger/changes.jsonl merge=union
+**/metrics/history.jsonl merge=union
+**/sources/index.jsonl merge=union
+**/packs/local.questions.jsonl merge=union

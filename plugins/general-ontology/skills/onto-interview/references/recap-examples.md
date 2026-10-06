@@ -1,0 +1,160 @@
+# Recap wording
+
+Record each answer with `onto_answer` in the same turn, then open the next turn with what you recorded: "Noted:"
+and at most 3 lines, followed by the next question. The user corrects it there if it is wrong; there is no separate
+OK turn. The one exception is a change to something already confirmed (a merge, an archive, a confirmed record):
+show that preview and ask first. Use the user's words; name kinds in plain language and ids only when they already
+exist.
+
+## A stated fact
+
+> Answer: "Bed captains water and weed the beds on a watering rota every morning, and the plot coordinator sets the
+> rota."
+
+```
+Noted:
+- a role "Bed captain" who works on a new process "Watering" (every morning)
+- the plot coordinator (role:plot-coordinator) owns Watering
+Next: who else takes part in Watering? (It tells me who to ask about the rota. For example: "the youth group on
+Saturdays".)
+```
+
+## A fact plus something inferred
+
+> Answer: "We keep a harvest log in the tool shed."
+
+```
+Noted: a dataset "Harvest log", kept in the tool shed (your words).
+As a draft for review: its format is probably paper (my guess, not yours).
+Next: what format is the harvest log in? 1. paper 2. spreadsheet 3. app (or skip, later, n/a, why?)
+```
+
+## The main kinds (right after the quick start)
+
+> Answer to `q.vocab.kinds`: "Beds, crops and harvests. The north bed is a bed, tomatoes are a crop, and the July
+> harvest is a harvest."
+
+New kinds are pack changes, so this answer gets its OK turn before anything is recorded:
+
+```
+Before I record this, three new kinds for the garden: Bed, Crop and Harvest, with one example each (North bed,
+Tomatoes, July harvest). Add them? (yes, or change a name)
+```
+
+On "yes", the same ops go in with `confirm=true`:
+
+```json
+[{"op": "add_kind", "name": "bed", "kind": {"label": "Bed", "plural": "beds"}},
+ {"op": "add_kind", "name": "crop", "kind": {"label": "Crop", "plural": "crops"}},
+ {"op": "add_kind", "name": "harvest", "kind": {"label": "Harvest", "plural": "harvests"}},
+ {"op": "add_node", "ref": "$north", "basis": "stated", "node": {"kind": "bed", "name": "North bed"},
+  "prov": [{"quote": "The north bed is a bed", "by": "user"}]},
+ {"op": "add_edge", "basis": "stated", "edge": {"src": "$north", "rel": "part_of", "dst": "topic:garden"},
+  "prov": [{"quote": "The north bed is a bed", "by": "user"}]},
+ {"op": "add_node", "ref": "$tomato", "basis": "stated", "node": {"kind": "crop", "name": "Tomatoes"},
+  "prov": [{"quote": "tomatoes are a crop", "by": "user"}]},
+ {"op": "add_edge", "basis": "stated", "edge": {"src": "$tomato", "rel": "part_of", "dst": "topic:garden"},
+  "prov": [{"quote": "tomatoes are a crop", "by": "user"}]},
+ {"op": "add_node", "ref": "$july", "basis": "stated", "node": {"kind": "harvest", "name": "July harvest"},
+  "prov": [{"quote": "the July harvest is a harvest", "by": "user"}]},
+ {"op": "add_edge", "basis": "stated", "edge": {"src": "$july", "rel": "part_of", "dst": "topic:garden"},
+  "prov": [{"quote": "the July harvest is a harvest", "by": "user"}]}]
+```
+
+## A link between two of your kinds
+
+> Answer to `q.deepen.more`: "Tomatoes grow in the north bed."
+
+No relation links a crop to a bed yet, so the answer declares one with `add_relation`: `from` and `to` are lists of
+kinds (or `"*"` for any kind), `inverse` is a relation name, `symmetric` and `brief` are `true` or `false`, and
+`description` holds the words. A new relation is a pack change, so this answer gets its OK turn too ("Add the link
+'grows in' between crops and beds?"), and on "yes" goes in with `confirm=true`:
+
+```json
+[{"op": "add_relation", "name": "grows_in",
+  "relation": {"from": ["crop"], "to": ["bed"], "inverse": "grows", "description": "the bed a crop grows in"}},
+ {"op": "add_edge", "basis": "stated", "edge": {"src": "crop:tomatoes", "rel": "grows_in", "dst": "bed:north-bed"},
+  "prov": [{"quote": "Tomatoes grow in the north bed.", "by": "user"}]}]
+```
+
+A malformed declaration is refused with the reason, for example `add_relation: the local pack would fail its
+schema: $.relations.grows_in.brief: 'where a crop grows' is not of type 'boolean'`: fix that field and send it again.
+
+## Words and their meanings (vocabulary)
+
+> Answer to `q.vocab.terms`: "The rota is the weekly list of who waters which bed. A plot share is one family's part
+> of the harvest."
+
+```
+Noted, two words the garden uses:
+- "Rota": the weekly list of who waters which bed
+- "Plot share": one family's part of the harvest
+Next: who decides how big a plot share is?
+```
+
+Each term comes with a `defines` edge in the same answer, from the topic or from the process or deliverable that
+uses the word. Without it the term does not count toward vocabulary and `onto_next` asks how it relates to the rest:
+
+```json
+[{"op": "add_node", "ref": "$rota", "basis": "stated",
+  "node": {"kind": "term", "name": "Rota", "summary": "The weekly list of who waters which bed."},
+  "prov": [{"quote": "The rota is the weekly list of who waters which bed.", "by": "user"}]},
+ {"op": "add_edge", "basis": "stated", "edge": {"src": "topic:garden", "rel": "defines", "dst": "$rota"},
+  "prov": [{"quote": "The rota is the weekly list of who waters which bed.", "by": "user"}]},
+ {"op": "add_node", "ref": "$share", "basis": "stated",
+  "node": {"kind": "term", "name": "Plot share", "summary": "One family's part of the harvest."},
+  "prov": [{"quote": "A plot share is one family's part of the harvest.", "by": "user"}]},
+ {"op": "add_edge", "basis": "stated", "edge": {"src": "topic:garden", "rel": "defines", "dst": "$share"},
+  "prov": [{"quote": "A plot share is one family's part of the harvest.", "by": "user"}]}]
+```
+
+`src` and `loc` are left out: `onto_answer` fills in the answer's source and `Q:q.vocab.terms`.
+
+## A gap question
+
+> `onto_next` offers the gap question `q.gap.orphan@term:rota`: how Rota ties in with the rest of the garden.
+> Answer: "The rota is how we run the watering."
+
+```
+Noted: Watering uses the word "Rota" (process:watering defines term:rota).
+```
+
+Call `onto_answer q=q.gap.orphan@term:rota` with the full id, and leave `loc` out of the provenance: the kit cites
+the answer as `Q:q.gap.orphan`, the id before the `@`.
+
+## A choice (also a decision)
+
+> Answer: "Track watering per bed, but note the steward on each entry."
+
+```
+Noted, your decision: track watering per bed, noting the steward (question: per bed or per steward?).
+It covers dataset:harvest-log.
+```
+
+Then call `onto_decide` with `chosen: "other"` and `chosen_text` in the user's words, as well as `onto_answer`.
+
+## A correction
+
+> User: "No, the coordinator doesn't own the log, she only reads it."
+
+```
+Changed: the plot coordinator reads (consumes) the harvest log; nobody owns it yet.
+I will ask later who keeps it up to date.
+```
+
+## A skip
+
+```
+Skipped for now. I will not ask again today.
+```
+
+Record it with `status: "skipped"` (or `later`). For "that does not apply to us", use `na`: on a stage question the
+question's dimension is closed and nothing more is asked about it; on a gap question (`q.gap.*`) only that question
+is closed.
+
+## Progress every 5 answers
+
+```
+Richness 34 -> 41 (working). People and data are covered; vocabulary is still empty.
+Next I would ask about the words you use most. Keep going?
+```

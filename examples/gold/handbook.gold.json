@@ -1,0 +1,53 @@
+{
+ "edges": [
+  {
+   "dst": {
+    "kind": "crop",
+    "name": "Tomato"
+   },
+   "rel": "tends",
+   "src": {
+    "kind": "role",
+    "name": "Bed steward"
+   }
+  },
+  {
+   "dst": {
+    "kind": "crop",
+    "name": "Mint"
+   },
+   "rel": "tends",
+   "src": {
+    "kind": "role",
+    "name": "Bed steward"
+   }
+  },
+  {
+   "dst": {
+    "kind": "plot",
+    "name": "North bed"
+   },
+   "rel": "constrains",
+   "src": {
+    "kind": "constraint",
+    "name": "No pesticides"
+   }
+  }
+ ],
+ "nodes": [
+  {
+   "kind": "role",
+   "name": "Bed steward"
+  },
+  {
+   "kind": "constraint",
+   "name": "No pesticides"
+  },
+  {
+   "kind": "term",
+   "name": "Mulch"
+  }
+ ],
+ "note": "What a careful reader extracts from the handbook excerpt. Endpoints are {kind, name}.",
+ "source": "examples/garden/inbox/handbook-excerpt.md"
+}

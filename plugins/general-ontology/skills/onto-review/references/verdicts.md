@@ -1,0 +1,45 @@
+# Verdicts
+
+One verdict per op. What each does to the record, by where the op came from:
+
+| Verdict | Record status | Trust | When |
+|---|---|---|---|
+| `accept` | confirmed | `user` for a stated fact quoted verbatim from the user's own answer; `reviewed` otherwise | The user agrees with the op as written |
+| `draft` | proposed, shown as `(draft)` | `agent` for an answer, `untrusted` for any other source | Plausible but unconfirmed; keep it visible and ask later |
+| `reject` | not applied | - | Wrong, out of scope, or a duplicate |
+| `edit` | as `accept`, with the replacement op | as `accept` | Right idea, wrong detail: give the full replacement op, which is checked again |
+
+## Rules
+
+- Statuses move forward only: a draft can be confirmed later by a reviewed op; nothing returns to draft.
+- Trust only rises. A later accept can raise `untrusted` to `reviewed`; nothing lowers it, with one exception: a
+  `draft` verdict that changes a draft record's name, summary, aliases, attrs or note gives the record the draft's
+  trust when that is lower.
+- `merge`, `archive`, pack ops (`add_kind`, `add_relation`, `add_field`, `map_kinds`) and `add_question` take
+  `accept` or `reject` only.
+- An update of a confirmed record takes `accept` or `reject` (not `draft`), and needs an explicit yes.
+- Accepting an `add_node` or `add_edge` needs provenance. An op without it can only be drafted.
+- All ops rejected: the proposal ends as `rejected` and moves to `proposals/done/`.
+- Applying twice is safe: an applied proposal returns its stored result with "already applied".
+
+## Destructive ops
+
+A `merge` moves every edge and provenance entry of `drop` to `keep`, adds `drop`'s id and name to `keep`'s aliases,
+and archives `drop` (it stays resolvable through the alias). An `archive` retires a record with a reason and a
+decision; nothing is deleted. Show both to the user in plain words and wait for a yes on each.
+
+A merge that would move an edge of `drop` onto an archived edge of `keep` is refused, and the refusal names both
+edges. Archive that edge first with its own reason, or keep both nodes.
+
+## Bulk verdicts
+
+- `all=draft`: fast triage; everything lands as a draft.
+- `all=accept`: only for proposals the user wrote or read in full, such as a local pack change.
+- `all=reject`: the whole proposal is wrong; say why in `reason`.
+
+`reason` is kept with the review. Use it for the "why" of a rejection or a merge.
+
+## Calibration
+
+Every verdict is also a data point: `onto_gaps section=calibration` compares the agent's confidence with the
+verdicts (accept counts 1, draft or edit 0.5, reject 0). A high Brier score means the drafts are over-confident.

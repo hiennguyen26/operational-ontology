@@ -1,0 +1,199 @@
+{
+ "deliverables": {
+  "risk_register": {
+   "sections": [
+    {
+     "kinds": [
+      "risk"
+     ],
+     "title": "Risks"
+    },
+    {
+     "kinds": [
+      "control"
+     ],
+     "title": "Controls"
+    },
+    {
+     "decisions": true,
+     "title": "Active decisions"
+    },
+    {
+     "gaps": true,
+     "title": "Open points"
+    }
+   ],
+   "title": "Risk register"
+  }
+ },
+ "description": "Opt in with onto pack add assessment: risks rated per dimension (impact, inherent, residual), the controls that reduce them, and calibration checks in onto validate.",
+ "dimensions": {
+  "risks": {
+   "label": "Risks and controls",
+   "stage": 5,
+   "target": 2
+  }
+ },
+ "extends": [
+  "core"
+ ],
+ "kind_map": [],
+ "kinds": {
+  "control": {
+   "aliases": [],
+   "boost": 0,
+   "card": true,
+   "description": "A check or safeguard that reduces a risk. covers lists the rating dimensions it reduces (empty: all of them).",
+   "dimension": "risks",
+   "expected": [
+    "type",
+    "nature",
+    "status"
+   ],
+   "expects": [
+    {
+     "ask": "Which risk does {name} reduce?",
+     "dir": "out",
+     "min": 1,
+     "rel": "mitigates"
+    }
+   ],
+   "fields": {
+    "covers": {
+     "items": {
+      "pattern": "^[a-z][a-z0-9_-]{0,39}$",
+      "type": "string"
+     },
+     "maxItems": 20,
+     "type": "array",
+     "uniqueItems": true
+    },
+    "nature": {
+     "enum": [
+      "manual",
+      "automated"
+     ],
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "implemented",
+      "partial",
+      "missing",
+      "planned"
+     ],
+     "type": "string"
+    },
+    "type": {
+     "enum": [
+      "preventive",
+      "detective",
+      "corrective"
+     ],
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Control",
+   "plural": "controls",
+   "priority": 5,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.type",
+    "attrs.nature"
+   ],
+   "visibility": "shared"
+  },
+  "risk": {
+   "aliases": [],
+   "boost": 1,
+   "card": true,
+   "description": "Something that could go wrong, rated per dimension as dimension.measure=level (financial.impact=high). Ratings stay draft until a named owner reviews them.",
+   "dimension": "risks",
+   "expected": [
+    "statement",
+    "owner"
+   ],
+   "expects": [
+    {
+     "ask": "What already reduces {name}?",
+     "dir": "in",
+     "min": 1,
+     "rel": "mitigates"
+    },
+    {
+     "ask": "What could {name} harm in {topic}?",
+     "dir": "out",
+     "min": 1,
+     "rel": "threatens"
+    }
+   ],
+   "fields": {
+    "owner": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "ratings": {
+     "items": {
+      "pattern": "^[a-z][a-z0-9_-]{0,39}\\.(impact|inherent|residual)=(very_low|low|moderate|high|critical)$",
+      "type": "string"
+     },
+     "maxItems": 60,
+     "type": "array",
+     "uniqueItems": true
+    },
+    "statement": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "status": {
+     "enum": [
+      "draft",
+      "reviewed",
+      "approved"
+     ],
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Risk",
+   "plural": "risks",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.statement",
+    "attrs.owner"
+   ],
+   "visibility": "shared"
+  }
+ },
+ "pack": "assessment",
+ "relations": {
+  "mitigates": {
+   "brief": true,
+   "from": [
+    "control"
+   ],
+   "inverse": "mitigated_by",
+   "symmetric": false,
+   "to": [
+    "risk"
+   ]
+  },
+  "threatens": {
+   "brief": false,
+   "from": [
+    "risk"
+   ],
+   "inverse": "threatened_by",
+   "symmetric": false,
+   "to": "*"
+  }
+ },
+ "title": "Assessment",
+ "version": 1
+}

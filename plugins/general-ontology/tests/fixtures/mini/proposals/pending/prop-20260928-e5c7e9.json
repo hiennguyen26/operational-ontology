@@ -1,0 +1,83 @@
+{
+ "applied": null,
+ "base": "df678e6f49970bdf65cb9ef73215a71975d0e7419c1cb488b40588165b4a96a4",
+ "by": "agent",
+ "checks": {
+  "problems": [],
+  "quotes": {
+   "checked": 2,
+   "failed": []
+  },
+  "warnings": []
+ },
+ "created": "2026-09-28T12:00:00Z",
+ "id": "prop-20260928-e5c7e9",
+ "impact": [
+  "process:watering"
+ ],
+ "new_terms": [
+  "Mulch"
+ ],
+ "ops": [
+  {
+   "annot": {
+    "assigned_id": "term:mulch",
+    "conflict": null,
+    "expect": {},
+    "matches": [],
+    "stale": false
+   },
+   "basis": "inferred",
+   "conf": 0.7,
+   "n": 1,
+   "node": {
+    "kind": "term",
+    "name": "Mulch",
+    "summary": "Straw spread over the beds to keep the soil moist."
+   },
+   "op": "add_node",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L11-L11",
+     "quote": "Mulch keeps the soil moist between waterings.",
+     "src": "src-000a61a61d03"
+    }
+   ],
+   "ref": "$mulch"
+  },
+  {
+   "annot": {
+    "assigned_id": null,
+    "conflict": null,
+    "expect": {},
+    "matches": [],
+    "stale": false
+   },
+   "basis": "inferred",
+   "conf": 0.6,
+   "edge": {
+    "dst": "process:watering",
+    "key": "",
+    "rel": "related_to",
+    "src": "$mulch"
+   },
+   "n": 2,
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L11-L11",
+     "quote": "Mulch keeps the soil moist between waterings.",
+     "src": "src-000a61a61d03"
+    }
+   ]
+  }
+ ],
+ "priority": 10,
+ "review": null,
+ "source": "src-000a61a61d03",
+ "status": "pending",
+ "summary": "Handbook: 1 term, 1 link",
+ "supersedes": null
+}

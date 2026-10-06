@@ -1,0 +1,32 @@
+{
+ "created": "2026-09-28",
+ "format": 1,
+ "kit": "0.3.0",
+ "name": "mini-garden",
+ "ns": "mini",
+ "packs": [
+  "core",
+  "discovery",
+  "local"
+ ],
+ "policy": {
+  "keep_original_max_bytes": 5000000,
+  "max_pending": 20,
+  "pending_stale_days": 30,
+  "personal": {
+   "address": "redact",
+   "email": "redact",
+   "name": "keep",
+   "phone": "redact"
+  },
+  "stage_done_at": 0.6,
+  "weights": {
+   "completeness": 20,
+   "confirmation": 15,
+   "connectivity": 15,
+   "coverage": 30,
+   "evidence": 20
+  }
+ },
+ "title": "Mini garden"
+}

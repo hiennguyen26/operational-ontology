@@ -1,0 +1,23 @@
+g2t unreleased | richness 11 seed | imports: garden v1 <commit> ok, kitchen v1 <commit> ok
+scope "weekly menu" -> g2t/goal:weekly-harvest-menu, kitchen/deliverable:weekly-menu, kitchen/process:menu-planning (more: g2t/metric:local-produce-share, kitchen/role:line-cook, kitchen/constraint:allergen-labels)
+g2t/goal:weekly-harvest-menu  goal, confirmed, conf 0.9 | horizon every week | measured_by g2t/metric:local-produce-share; part_of g2t/topic:g2t; served_by kitchen/deliverable:weekly-menu | 1 source: src-e3ee530a8053 (1 quote) | needs: single_source
+  The kitchen's weekly menu, cooked from what the garden picks each week.
+kitchen/deliverable:weekly-menu  deliverable, confirmed, conf 0.9 | audience households who eat with the kitchen; cadence weekly | constrained_by kitchen/constraint:allergen-labels; has_part kitchen/dish:tomato-salad; produced_by kitchen/process:menu-planning; serves g2t/goal:weekly-harvest-menu, kitchen/goal:shared-weekly-meal; worked_on_by kitchen/role:line-cook | 1 source: src-ba88d35ead8a (1 quote) | needs: single_source
+  The menu posted every Thursday for the households who eat with the kitchen.
+kitchen/process:menu-planning  process, confirmed, conf 0.9 | consumes garden/dataset:harvest-log, kitchen/dataset:recipe-binder; owned_by kitchen/role:menu-planner; produces kitchen/deliverable:weekly-menu | 1 source: src-b0b4614e5516 (1 quote) | needs: single_source
+  Turns what is available into the weekly menu.
+related 2 consumed_by via garden/dataset:harvest-log: garden/role:plot-coordinator
+related 2 has_part via kitchen/dish:tomato-salad: kitchen/ingredient:basil, kitchen/ingredient:tomato
+related 2 part_of via kitchen/goal:shared-weekly-meal: kitchen/topic:kitchen
+related 2 produced_by via garden/dataset:harvest-log: garden/process:watering
+related 2 serves via garden/dataset:harvest-log: garden/goal:shared-harvest
+bridge kitchen/process:menu-planning -consumes-> garden/dataset:harvest-log
+bridge kitchen/deliverable:weekly-menu -serves-> g2t/goal:weekly-harvest-menu
+bridge garden/crop:tomato =same_as= kitchen/ingredient:tomato
+quote g2t/goal:weekly-harvest-menu: "Our goal is a weekly harvest menu: the kitchen cooks what the garden picks each week." (src-e3ee530a8053 Q:q.frame.goal)
+quote kitchen/deliverable:weekly-menu: "the weekly menu, posted every Thursday for the households who eat with us" (src-ba88d35ead8a Q:q.frame.deliverable)
+quote kitchen/process:menu-planning: "menu planning, which produces the weekly menu" (src-b0b4614e5516 Q:q.people.key)
+decision dec-20260928-when-does-the-weekly-menu-lock-92ee "When does the weekly menu lock?" -> "Thursday noon" (active)
+open: single_source g2t/goal:weekly-harvest-menu -> ask "What else confirms Weekly harvest menu?"
+open: single_source kitchen/deliverable:weekly-menu -> ask "What else confirms Weekly menu?"
+open: single_source kitchen/process:menu-planning -> ask "What else confirms Menu planning?"

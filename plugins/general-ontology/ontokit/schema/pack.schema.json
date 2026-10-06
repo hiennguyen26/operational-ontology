@@ -1,0 +1,715 @@
+{
+ "$defs": {
+  "deliverable": {
+   "additionalProperties": false,
+   "properties": {
+    "description": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "sections": {
+     "items": {
+      "$ref": "#/$defs/section"
+     },
+     "minItems": 1,
+     "type": "array"
+    },
+    "title": {
+     "maxLength": 100,
+     "minLength": 1,
+     "type": "string"
+    }
+   },
+   "required": [
+    "title",
+    "sections"
+   ],
+   "type": "object"
+  },
+  "dimension": {
+   "additionalProperties": false,
+   "properties": {
+    "description": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "label": {
+     "maxLength": 60,
+     "minLength": 1,
+     "type": "string"
+    },
+    "stage": {
+     "maximum": 9,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "target": {
+     "minimum": 1,
+     "type": "integer"
+    }
+   },
+   "required": [
+    "label",
+    "stage",
+    "target"
+   ],
+   "type": "object"
+  },
+  "expects": {
+   "additionalProperties": false,
+   "properties": {
+    "ask": {
+     "maxLength": 300,
+     "minLength": 1,
+     "type": "string"
+    },
+    "dir": {
+     "enum": [
+      "out",
+      "in"
+     ]
+    },
+    "min": {
+     "minimum": 1,
+     "type": "integer"
+    },
+    "rel": {
+     "pattern": "^[a-z][a-z0-9_]{0,31}$",
+     "type": "string"
+    }
+   },
+   "required": [
+    "rel",
+    "dir",
+    "min",
+    "ask"
+   ],
+   "type": "object"
+  },
+  "kind": {
+   "additionalProperties": false,
+   "properties": {
+    "aliases": {
+     "items": {
+      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+      "type": "string"
+     },
+     "type": "array",
+     "uniqueItems": true
+    },
+    "boost": {
+     "type": "number"
+    },
+    "card": {
+     "type": "boolean"
+    },
+    "description": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "dimension": {
+     "anyOf": [
+      {
+       "type": "null"
+      },
+      {
+       "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+       "type": "string"
+      }
+     ]
+    },
+    "expected": {
+     "items": {
+      "pattern": "^[a-z][a-z0-9_]{0,63}$",
+      "type": "string"
+     },
+     "type": "array",
+     "uniqueItems": true
+    },
+    "expects": {
+     "items": {
+      "$ref": "#/$defs/expects"
+     },
+     "type": "array"
+    },
+    "fields": {
+     "additionalProperties": {
+      "type": "object"
+     },
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9_]{0,63}$",
+      "type": "string"
+     },
+     "type": "object"
+    },
+    "hub": {
+     "type": "boolean"
+    },
+    "label": {
+     "maxLength": 60,
+     "minLength": 1,
+     "type": "string"
+    },
+    "plural": {
+     "maxLength": 60,
+     "minLength": 1,
+     "type": "string"
+    },
+    "priority": {
+     "maximum": 100,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "text": {
+     "items": {
+      "pattern": "^(?:name|summary|aliases|attrs\\.[a-z][a-z0-9_]{0,63})$",
+      "type": "string"
+     },
+     "type": "array",
+     "uniqueItems": true
+    },
+    "visibility": {
+     "enum": [
+      "shared",
+      "local"
+     ]
+    }
+   },
+   "required": [
+    "label"
+   ],
+   "type": "object"
+  },
+  "kind_list": {
+   "anyOf": [
+    {
+     "const": "*"
+    },
+    {
+     "items": {
+      "pattern": "^(?:\\*|(?:[a-z][a-z0-9-]{0,31}/)?[a-z][a-z0-9-]{0,31})$",
+      "type": "string"
+     },
+     "minItems": 1,
+     "type": "array",
+     "uniqueItems": true
+    }
+   ]
+  },
+  "kind_map_entry": {
+   "additionalProperties": false,
+   "properties": {
+    "a": {
+     "$ref": "#/$defs/kind_name"
+    },
+    "b": {
+     "$ref": "#/$defs/kind_name"
+    }
+   },
+   "required": [
+    "a",
+    "b"
+   ],
+   "type": "object"
+  },
+  "kind_name": {
+   "pattern": "^(?:[a-z][a-z0-9-]{0,31}/)?[a-z][a-z0-9-]{0,31}$",
+   "type": "string"
+  },
+  "option": {
+   "anyOf": [
+    {
+     "maxLength": 200,
+     "minLength": 1,
+     "type": "string"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "maxLength": 60,
+       "minLength": 1,
+       "type": "string"
+      },
+      "label": {
+       "maxLength": 200,
+       "minLength": 1,
+       "type": "string"
+      }
+     },
+     "required": [
+      "id",
+      "label"
+     ],
+     "type": "object"
+    }
+   ]
+  },
+  "pack": {
+   "additionalProperties": false,
+   "properties": {
+    "deliverables": {
+     "additionalProperties": {
+      "$ref": "#/$defs/deliverable"
+     },
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+      "type": "string"
+     },
+     "type": "object"
+    },
+    "description": {
+     "maxLength": 600,
+     "type": "string"
+    },
+    "dimensions": {
+     "additionalProperties": {
+      "$ref": "#/$defs/dimension"
+     },
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9_-]{0,31}$",
+      "type": "string"
+     },
+     "type": "object"
+    },
+    "extends": {
+     "items": {
+      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+      "type": "string"
+     },
+     "type": "array",
+     "uniqueItems": true
+    },
+    "kind_map": {
+     "items": {
+      "$ref": "#/$defs/kind_map_entry"
+     },
+     "type": "array"
+    },
+    "kinds": {
+     "additionalProperties": {
+      "$ref": "#/$defs/kind"
+     },
+     "propertyNames": {
+      "not": {
+       "enum": [
+        "e",
+        "src",
+        "imp",
+        "source",
+        "prop",
+        "dec",
+        "chg",
+        "ans"
+       ]
+      },
+      "pattern": "^[a-z][a-z0-9-]{0,31}$",
+      "type": "string"
+     },
+     "type": "object"
+    },
+    "pack": {
+     "pattern": "^[a-z][a-z0-9-]{0,31}$",
+     "type": "string"
+    },
+    "relations": {
+     "additionalProperties": {
+      "$ref": "#/$defs/relation"
+     },
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9_]{0,31}$",
+      "type": "string"
+     },
+     "type": "object"
+    },
+    "title": {
+     "maxLength": 100,
+     "type": "string"
+    },
+    "version": {
+     "minimum": 1,
+     "type": "integer"
+    }
+   },
+   "required": [
+    "pack",
+    "version",
+    "kinds",
+    "relations"
+   ],
+   "type": "object"
+  },
+  "predicate": {
+   "anyOf": [
+    {
+     "additionalProperties": false,
+     "properties": {
+      "count": {
+       "additionalProperties": false,
+       "anyOf": [
+        {
+         "required": [
+          "lt"
+         ]
+        },
+        {
+         "required": [
+          "gte"
+         ]
+        }
+       ],
+       "properties": {
+        "gte": {
+         "minimum": 0,
+         "type": "integer"
+        },
+        "kind": {
+         "$ref": "#/$defs/kind_name"
+        },
+        "lt": {
+         "minimum": 0,
+         "type": "integer"
+        },
+        "ns": {
+         "maxLength": 32,
+         "minLength": 1,
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind"
+       ],
+       "type": "object"
+      }
+     },
+     "required": [
+      "count"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "missing_field": {
+       "additionalProperties": false,
+       "properties": {
+        "field": {
+         "pattern": "^[a-z][a-z0-9_]{0,63}$",
+         "type": "string"
+        },
+        "kind": {
+         "$ref": "#/$defs/kind_name"
+        }
+       },
+       "required": [
+        "kind",
+        "field"
+       ],
+       "type": "object"
+      }
+     },
+     "required": [
+      "missing_field"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "answered": {
+       "$ref": "#/$defs/question_id"
+      }
+     },
+     "required": [
+      "answered"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "not_answered": {
+       "$ref": "#/$defs/question_id"
+      }
+     },
+     "required": [
+      "not_answered"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "stage_done": {
+       "maximum": 9,
+       "minimum": 0,
+       "type": "integer"
+      }
+     },
+     "required": [
+      "stage_done"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "has_imports": {
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "has_imports"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "all_filled": {
+       "additionalProperties": false,
+       "properties": {
+        "field": {
+         "pattern": "^[a-z][a-z0-9_]{0,63}$",
+         "type": "string"
+        },
+        "kind": {
+         "$ref": "#/$defs/kind_name"
+        }
+       },
+       "required": [
+        "kind",
+        "field"
+       ],
+       "type": "object"
+      }
+     },
+     "required": [
+      "all_filled"
+     ],
+     "type": "object"
+    },
+    {
+     "additionalProperties": false,
+     "properties": {
+      "all_linked": {
+       "additionalProperties": false,
+       "properties": {
+        "dir": {
+         "enum": [
+          "in",
+          "out"
+         ]
+        },
+        "kind": {
+         "$ref": "#/$defs/kind_name"
+        },
+        "rel": {
+         "pattern": "^[a-z][a-z0-9_]{0,31}$",
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind",
+        "rel"
+       ],
+       "type": "object"
+      }
+     },
+     "required": [
+      "all_linked"
+     ],
+     "type": "object"
+    }
+   ],
+   "description": "One interview predicate; a list of them is an AND."
+  },
+  "question": {
+   "additionalProperties": false,
+   "properties": {
+    "ask": {
+     "maxLength": 400,
+     "minLength": 1,
+     "type": "string"
+    },
+    "dimension": {
+     "anyOf": [
+      {
+       "type": "null"
+      },
+      {
+       "maxLength": 40,
+       "minLength": 1,
+       "type": "string"
+      }
+     ]
+    },
+    "fills": {
+     "additionalProperties": false,
+     "properties": {
+      "fields": {
+       "items": {
+        "maxLength": 80,
+        "minLength": 1,
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "kinds": {
+       "items": {
+        "$ref": "#/$defs/kind_name"
+       },
+       "type": "array"
+      }
+     },
+     "type": "object"
+    },
+    "follow_ups": {
+     "items": {
+      "$ref": "#/$defs/question_id"
+     },
+     "type": "array"
+    },
+    "for_gap": {
+     "pattern": "^[a-z_]{1,40}$",
+     "type": "string"
+    },
+    "id": {
+     "$ref": "#/$defs/question_id"
+    },
+    "options": {
+     "anyOf": [
+      {
+       "type": "null"
+      },
+      {
+       "items": {
+        "$ref": "#/$defs/option"
+       },
+       "type": "array"
+      }
+     ]
+    },
+    "priority": {
+     "type": "integer"
+    },
+    "quick": {
+     "type": "boolean"
+    },
+    "repeatable": {
+     "type": "boolean"
+    },
+    "stage": {
+     "maximum": 9,
+     "minimum": 0,
+     "type": "integer"
+    },
+    "until": {
+     "items": {
+      "$ref": "#/$defs/predicate"
+     },
+     "type": "array"
+    },
+    "when": {
+     "items": {
+      "$ref": "#/$defs/predicate"
+     },
+     "type": "array"
+    },
+    "why": {
+     "maxLength": 400,
+     "type": "string"
+    }
+   },
+   "required": [
+    "id",
+    "ask"
+   ],
+   "type": "object"
+  },
+  "question_id": {
+   "pattern": "^q\\.[a-z0-9][a-z0-9._-]{0,79}$",
+   "type": "string"
+  },
+  "relation": {
+   "additionalProperties": false,
+   "properties": {
+    "aliases": {
+     "items": {
+      "pattern": "^[a-z][a-z0-9_]{0,31}$",
+      "type": "string"
+     },
+     "type": "array",
+     "uniqueItems": true
+    },
+    "brief": {
+     "type": "boolean"
+    },
+    "description": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "from": {
+     "$ref": "#/$defs/kind_list"
+    },
+    "inverse": {
+     "pattern": "^[a-z][a-z0-9_]{0,31}$",
+     "type": "string"
+    },
+    "label": {
+     "maxLength": 60,
+     "minLength": 1,
+     "type": "string"
+    },
+    "symmetric": {
+     "type": "boolean"
+    },
+    "to": {
+     "$ref": "#/$defs/kind_list"
+    }
+   },
+   "required": [
+    "from",
+    "to"
+   ],
+   "type": "object"
+  },
+  "section": {
+   "additionalProperties": false,
+   "properties": {
+    "decisions": {
+     "type": "boolean"
+    },
+    "description": {
+     "maxLength": 300,
+     "type": "string"
+    },
+    "gaps": {
+     "type": "boolean"
+    },
+    "kinds": {
+     "items": {
+      "$ref": "#/$defs/kind_name"
+     },
+     "type": "array"
+    },
+    "sources": {
+     "type": "boolean"
+    },
+    "title": {
+     "maxLength": 100,
+     "minLength": 1,
+     "type": "string"
+    }
+   },
+   "required": [
+    "title"
+   ],
+   "type": "object"
+  }
+ },
+ "$id": "ontokit/pack.schema.json",
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "description": "$defs for pack files (*.pack.json) and question bank lines (*.questions.jsonl). The question and predicate defs are kept identical to records.schema.json (a test checks it).",
+ "title": "ontokit packs and questions"
+}

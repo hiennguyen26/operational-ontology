@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""Launcher for the onto MCP server (stdio): python3 bin/onto-mcp [--repo PATH] [--profile query|full].
+
+A relative --repo is taken from the working directory. Without --repo or $ONTO_REPO, the server discovers the
+topic from the working directory, then asks a client that declared roots for them (ontokit.mcp_server).
+
+Finds a python3 >= 3.9 (this interpreter, then /usr/bin/python3, then each python3 on PATH) and re-executes
+itself with it when needed, hands off to the kit vendored in the topic repo when that differs from this one
+(ontokit.handoff), puts the plugin dir on sys.path, disables bytecode writing and runs ontokit.mcp_server. It
+never writes to stdout, which carries only JSON-RPC. Kept to syntax that any python3 (and python2) can parse, so
+an old interpreter reaches the version check.
+"""
+import os
+import subprocess
+import sys
+
+MINIMUM = (3, 9)
+GUARD = "ONTO_MCP_REEXEC"
+CHECK = "import sys; sys.exit(0 if sys.version_info[:2] >= (%d, %d) else 1)"
+HERE = os.path.realpath(__file__)
+PLUGIN_DIR = os.path.dirname(os.path.dirname(HERE))
+
+
+def version_ok(exe):
+    try:
+        with open(os.devnull, "r+b") as null:
+            return subprocess.call([exe, "-c", CHECK % MINIMUM], stdin=null, stdout=null, stderr=null) == 0
+    except OSError:
+        return False
+
+
+def candidates():
+    """/usr/bin/python3, then every python3 on PATH, without duplicates or this interpreter."""
+    seen = set([os.path.realpath(sys.executable)]) if sys.executable else set()
+    found = []
+    dirs = [d for d in os.environ.get("PATH", "").split(os.pathsep) if d]
+    for path in ["/usr/bin/python3"] + [os.path.join(d, "python3") for d in dirs]:
+        if not (os.path.isfile(path) and os.access(path, os.X_OK)):
+            continue
+        real = os.path.realpath(path)
+        if real in seen:
+            continue
+        seen.add(real)
+        found.append(path)
+    return found
+
+
+def find_python():
+    """The interpreter to run the server with, or None. The running one wins when it is new enough."""
+    if tuple(sys.version_info[:2]) >= MINIMUM:
+        return sys.executable or "python3"
+    for exe in candidates():
+        if version_ok(exe):
+            return exe
+    return None
+
+
+def main():
+    if tuple(sys.version_info[:2]) < MINIMUM:
+        exe = None if os.environ.get(GUARD) else find_python()
+        if not exe:
+            sys.stderr.write("[onto] the MCP server needs python3 >= %d.%d; found %s at %s. Install one or put it "
+                             "first on PATH.\n" % (MINIMUM[0], MINIMUM[1], sys.version.split()[0], sys.executable))
+            return 1
+        env = dict(os.environ)
+        env[GUARD] = "1"
+        env["PYTHONDONTWRITEBYTECODE"] = "1"
+        os.execve(exe, [exe, HERE] + sys.argv[1:], env)
+    sys.dont_write_bytecode = True
+    if PLUGIN_DIR not in sys.path:
+        sys.path.insert(0, PLUGIN_DIR)
+    from ontokit import handoff
+
+    handoff.maybe_handoff(sys.argv[1:], "onto-mcp")
+    from ontokit.mcp_server import main as serve
+
+    return serve(sys.argv[1:])
+
+
+if __name__ == "__main__":
+    sys.exit(main())

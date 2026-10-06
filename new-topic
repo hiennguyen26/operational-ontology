@@ -1,0 +1,27 @@
+#!/bin/sh
+# Make a new topic from this template checkout: runs `onto setup` with the arguments given (for example
+# ./new-topic --new ~/Ontologies/garden). The onto launcher finds a python3 3.9 or newer itself.
+set -eu
+# a relative --new DIR means the folder you ran this from, not the kit checkout (a name typed at the folder prompt
+# goes under ~/Ontologies)
+ONTO_SETUP_CWD=${ONTO_SETUP_CWD:-$PWD}
+export ONTO_SETUP_CWD
+# run through a symlink (say ~/bin/new-topic), the kit is next to the file the link points at
+self=$0
+while [ -L "$self" ]; do
+  link=$(readlink -- "$self")
+  case $link in
+    /*) self=$link ;;
+    *) self=$(dirname -- "$self")/$link ;;
+  esac
+done
+here=$(CDPATH='' cd -- "$(dirname -- "$self")" && pwd)
+cd "$here"
+onto="$here/plugins/general-ontology/bin/onto"
+for py in python3 /usr/bin/python3 python; do
+  if command -v "$py" >/dev/null 2>&1; then
+    exec "$py" "$onto" setup "$@"
+  fi
+done
+echo "new-topic: needs python3 3.9 or newer; install it, then run ./new-topic again" >&2
+exit 1

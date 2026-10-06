@@ -1,0 +1,5 @@
+# Kit-local ignores (the repo root .gitignore covers topic outputs)
+__pycache__/
+*.py[co]
+.DS_Store
+* [0-9].*

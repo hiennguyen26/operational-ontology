@@ -1,0 +1,16 @@
+{
+ "source": "src-000a61a61d03",
+ "summary": "Handbook: mulch, tomato beds, the report audience",
+ "ops": [
+  {"op": "add_node", "ref": "$mulch", "node": {"kind": "term", "name": "Mulch", "summary": "Straw spread over the beds to keep the soil moist."},
+   "prov": [{"src": "src-000a61a61d03", "loc": "L11-L11", "quote": "Mulch keeps the soil moist between waterings.", "by": "agent"}]},
+  {"op": "add_edge", "edge": {"src": "$mulch", "rel": "related_to", "dst": "process:watering"}, "conf": 0.6,
+   "prov": [{"src": "src-000a61a61d03", "loc": "L11-L11", "quote": "Mulch keeps the soil moist between waterings.", "by": "agent"}]},
+  {"op": "add_node", "ref": "$bed", "node": {"kind": "term", "name": "Tomato bed"},
+   "prov": [{"src": "src-000a61a61d03", "loc": "L3-L3", "quote": "the tomato beds", "by": "agent"}]},
+  {"op": "add_edge", "edge": {"src": "constraint:no-pesticides", "rel": "related_to", "dst": "$bed"},
+   "prov": [{"src": "src-000a61a61d03", "loc": "L10-L10", "quote": "keeps pests away from the tomato beds", "by": "agent"}]},
+  {"op": "update_node", "id": "deliverable:harvest-report", "set": {"attrs.audience": "member households"},
+   "prov": [{"src": "src-000a61a61d03", "loc": "L12-L12", "quote": "goes to member households each month", "by": "agent"}]}
+ ]
+}

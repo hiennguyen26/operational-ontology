@@ -1,0 +1,65 @@
+{
+ "by": "agent",
+ "ops": [
+  {
+   "basis": "inferred",
+   "conf": 0.9,
+   "node": {
+    "attrs": {
+     "type": "rule"
+    },
+    "kind": "constraint",
+    "name": "Allergen labels",
+    "summary": "Every dish on the weekly menu carries allergen labels."
+   },
+   "op": "add_node",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L3-L3",
+     "quote": "Every dish on the weekly menu carries allergen labels",
+     "src": "@SRC@"
+    }
+   ],
+   "ref": "$labels"
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.9,
+   "edge": {
+    "dst": "deliverable:weekly-menu",
+    "rel": "constrains",
+    "src": "$labels"
+   },
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L3-L3",
+     "quote": "Every dish on the weekly menu carries allergen labels for nuts, dairy and gluten.",
+     "src": "@SRC@"
+    }
+   ]
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.7,
+   "edge": {
+    "dst": "dish:tomato-salad",
+    "rel": "constrains",
+    "src": "$labels"
+   },
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L3-L3",
+     "quote": "Every dish on the weekly menu",
+     "src": "@SRC@"
+    }
+   ]
+  }
+ ],
+ "source": "@SRC@",
+ "summary": "Menu notes: the allergen labels rule and what it covers"
+}

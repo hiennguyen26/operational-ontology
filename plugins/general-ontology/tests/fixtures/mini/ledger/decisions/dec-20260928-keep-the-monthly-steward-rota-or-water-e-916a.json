@@ -1,0 +1,27 @@
+{
+ "at": "2026-09-28T12:00:00Z",
+ "chosen": "daily",
+ "chosen_text": null,
+ "decided_by": "user",
+ "id": "dec-20260928-keep-the-monthly-steward-rota-or-water-e-916a",
+ "options": [
+  {
+   "id": "rota",
+   "label": "Monthly steward rota"
+  },
+  {
+   "id": "daily",
+   "label": "Water every morning"
+  }
+ ],
+ "question": "Keep the monthly steward rota or water every morning?",
+ "rationale": "The dry summer showed beds need water every day",
+ "recommended": "daily",
+ "scope": [
+  "process:old-rota",
+  "process:watering"
+ ],
+ "status": "active",
+ "superseded_by": null,
+ "supersedes": null
+}

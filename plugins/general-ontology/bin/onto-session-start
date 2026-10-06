@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+"""Session-start hook launcher: python3 bin/onto-session-start [--format text|json] (hooks/hooks.json runs it).
+
+Prints a few safe lines of context (ontokit.hook) when the session starts in a topic repo or in the template
+checkout, and nothing elsewhere. --format json wraps the same lines as
+{"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": ...}}; text is the default.
+Under --format json a vendored kit is not exec'd (an older one ignores --format and prints plain lines): its hook
+runs as a child in text and this kit wraps those lines (ontokit.hook.relay).
+Finds a python3 >= 3.9 (this interpreter, then /usr/bin/python3, then each python3 on PATH) and re-executes
+itself with it when needed, then hands off to the kit vendored in the topic repo when that differs from this one
+(ontokit.handoff, quietly), so the kit that serves the topic describes it and reports no version skew the CLI
+would not. It never fails the session: any problem, including no suitable python or a closed stdout, ends quietly
+with exit code 0. Kept to syntax that any python3 (and python2) can parse.
+"""
+import os
+import subprocess
+import sys
+
+MINIMUM = (3, 9)
+GUARD = "ONTO_HOOK_REEXEC"
+CHECK = "import sys; sys.exit(0 if sys.version_info[:2] >= (%d, %d) else 1)"
+HERE = os.path.realpath(__file__)
+PLUGIN_DIR = os.path.dirname(os.path.dirname(HERE))
+
+
+def version_ok(exe):
+    try:
+        with open(os.devnull, "r+b") as null:
+            return subprocess.call([exe, "-c", CHECK % MINIMUM], stdin=null, stdout=null, stderr=null) == 0
+    except OSError:
+        return False
+
+
+def candidates():
+    """/usr/bin/python3, then every python3 on PATH, without duplicates or this interpreter."""
+    seen = set([os.path.realpath(sys.executable)]) if sys.executable else set()
+    found = []
+    dirs = [d for d in os.environ.get("PATH", "").split(os.pathsep) if d]
+    for path in ["/usr/bin/python3"] + [os.path.join(d, "python3") for d in dirs]:
+        if not (os.path.isfile(path) and os.access(path, os.X_OK)):
+            continue
+        real = os.path.realpath(path)
+        if real in seen:
+            continue
+        seen.add(real)
+        found.append(path)
+    return found
+
+
+def find_python():
+    """The interpreter to run with, or None. The running one wins when it is new enough."""
+    if tuple(sys.version_info[:2]) >= MINIMUM:
+        return sys.executable or "python3"
+    for exe in candidates():
+        if version_ok(exe):
+            return exe
+    return None
+
+
+class Quiet(object):
+    """A stderr for the handoff: the hook adds nothing to the session but its lines."""
+
+    def write(self, text):
+        return None
+
+    def flush(self):
+        return None
+
+
+def quiet_stdout():
+    """Flush stdout; when that fails (a closed pipe), point fd 1 at the null device so the flush at exit cannot
+    fail again and turn exit code 0 into 120."""
+    try:
+        sys.stdout.flush()
+        return
+    except BaseException:
+        pass
+    try:
+        null = os.open(os.devnull, os.O_WRONLY)
+        try:
+            os.dup2(null, sys.stdout.fileno())
+        finally:
+            os.close(null)
+    except BaseException:
+        pass
+
+
+def main():
+    try:
+        if tuple(sys.version_info[:2]) < MINIMUM:
+            exe = None if os.environ.get(GUARD) else find_python()
+            if not exe:
+                return 0
+            env = dict(os.environ)
+            env[GUARD] = "1"
+            env["PYTHONDONTWRITEBYTECODE"] = "1"
+            os.execve(exe, [exe, HERE] + sys.argv[1:], env)
+        sys.dont_write_bytecode = True
+        if PLUGIN_DIR not in sys.path:
+            sys.path.insert(0, PLUGIN_DIR)
+        relayed = False
+        try:
+            from ontokit import handoff, hook
+
+            relayed = hook.relay(sys.argv[1:])
+            if not relayed and hook.format_arg(sys.argv[1:]) != "json":
+                handoff.maybe_handoff(sys.argv[1:], "onto-session-start", stderr=Quiet())
+        except Exception:  # no handoff: this kit describes the topic
+            pass
+        if not relayed:
+            from ontokit.hook import main as run
+
+            run(sys.argv[1:])
+    except BaseException:
+        pass
+    quiet_stdout()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

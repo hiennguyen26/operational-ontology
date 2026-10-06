@@ -1,0 +1,13 @@
+{
+ "title": "Handbook excerpt of the mini garden",
+ "nodes": [
+  {"kind": "term", "name": "Mulch", "ref": "$m"},
+  {"kind": "term", "name": "Tomato bed", "ref": "$bed"},
+  {"kind": "tool", "name": "Rain barrel"}
+ ],
+ "edges": [
+  {"src": "process:watering", "rel": "related_to", "dst": "$m"},
+  {"src": "$bed", "rel": "related_to", "dst": {"kind": "constraint", "name": "No pesticides"}},
+  {"src": "role:bed-steward", "rel": "works_on", "dst": "process:watering"}
+ ]
+}

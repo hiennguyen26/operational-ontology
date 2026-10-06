@@ -1,0 +1,70 @@
+{
+ "deliverables": {},
+ "dimensions": {},
+ "extends": [
+  "core"
+ ],
+ "kind_map": [],
+ "kinds": {
+  "dish": {
+   "card": true,
+   "description": "Something the kitchen cooks and serves.",
+   "expected": [
+    "serves"
+   ],
+   "fields": {
+    "course": {
+     "type": "string"
+    },
+    "serves": {
+     "minimum": 1,
+     "type": "integer"
+    }
+   },
+   "hub": false,
+   "label": "Dish",
+   "plural": "dishes",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.course"
+   ]
+  },
+  "ingredient": {
+   "card": true,
+   "description": "Something a dish is made from.",
+   "expects": [
+    {
+     "ask": "Which dishes use {name}?",
+     "dir": "out",
+     "min": 1,
+     "rel": "part_of"
+    }
+   ],
+   "fields": {
+    "allergen": {
+     "type": "string"
+    },
+    "season": {
+     "type": "string"
+    }
+   },
+   "hub": false,
+   "label": "Ingredient",
+   "plural": "ingredients",
+   "priority": 6,
+   "text": [
+    "name",
+    "summary",
+    "aliases",
+    "attrs.season"
+   ]
+  }
+ },
+ "pack": "local",
+ "relations": {},
+ "title": "Neighborhood kitchen pack",
+ "version": 1
+}

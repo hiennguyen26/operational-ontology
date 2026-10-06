@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Ontology viewer</title>
+<style>/*@CSS@*/</style>
+</head>
+<body>
+<a class="skip" id="skip" href="#view">Skip to content</a>
+<header class="top">
+  <div class="bar">
+    <a class="brand" id="brand" href="#richness">Ontology</a>
+    <button type="button" class="theme" id="theme" aria-label="Theme: Auto, Light or Dark">Theme</button>
+  </div>
+  <p class="version" id="version"></p>
+  <nav class="nav" aria-label="Views">
+    <a href="#richness">Overview</a>
+    <a href="#kinds">Kinds</a>
+    <a href="#sources">Sources</a>
+    <a href="#imports">Imports and bridges</a>
+  </nav>
+  <form class="search" id="search-form" role="search">
+    <label class="sr" for="q">Search</label>
+    <input id="q" type="search" placeholder="Search names, ids, aliases and summaries" autocomplete="off" spellcheck="false">
+  </form>
+</header>
+<main id="view" class="view" tabindex="-1"></main>
+<aside id="peek" class="peek" role="dialog" aria-label="Quick look" hidden></aside>
+<footer class="foot" id="foot"></footer>
+<noscript><p class="noscript">This viewer needs JavaScript. The records are in build/export.json; decisions are in ledger/decisions/. Like the export, this page leaves out local-only records: where a decision or need names one, it reads [local record].</p></noscript>
+<script id="data" type="application/json">@DATA@</script>
+<script>/*@JS@*/</script>
+</body>
+</html>

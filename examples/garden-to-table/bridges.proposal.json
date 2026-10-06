@@ -1,0 +1,11 @@
+{
+ "by": "agent",
+ "ops": [
+  {
+   "a": "garden/crop",
+   "b": "kitchen/ingredient",
+   "op": "map_kinds"
+  }
+ ],
+ "summary": "Garden crops are kitchen ingredients"
+}

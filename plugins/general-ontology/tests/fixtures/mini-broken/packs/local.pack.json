@@ -1,0 +1,12 @@
+{
+ "deliverables": {},
+ "dimensions": {},
+ "extends": [
+  "core"
+ ],
+ "kind_map": [],
+ "kinds": {},
+ "pack": "local",
+ "relations": {},
+ "version": 1
+}

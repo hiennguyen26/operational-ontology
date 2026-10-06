@@ -1,0 +1,11 @@
+Q: q.frame.you
+I coordinate the plots for a small community garden.
+Q: q.frame.goal
+Our goal is a shared harvest that feeds every member household.
+Q: q.people.key
+The bed steward waters and weeds one bed each week.
+The plot coordinator keeps the harvest log up to date and runs the watering rota.
+A volunteer lead helps the plot coordinator on weekends.
+Q: q.data.where
+The harvest log is a paper notebook kept in the tool shed.
+Watering happens every morning before nine, checked against the rain gauge by the gate.

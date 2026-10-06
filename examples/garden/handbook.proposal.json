@@ -1,0 +1,156 @@
+{
+ "by": "agent",
+ "ops": [
+  {
+   "basis": "inferred",
+   "conf": 0.8,
+   "node": {
+    "aliases": [
+     "Bed captain"
+    ],
+    "kind": "role",
+    "name": "Bed steward",
+    "summary": "Volunteer who waters and weeds one bed each week."
+   },
+   "op": "add_node",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L4-L4",
+     "quote": "Bed stewards (some members still say bed captains) water and weed one bed each week.",
+     "src": "@SRC@"
+    }
+   ],
+   "ref": "$steward"
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.8,
+   "edge": {
+    "dst": "crop:tomato",
+    "rel": "tends",
+    "src": "$steward"
+   },
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L5-L5",
+     "quote": "Each steward tends the tomatoes",
+     "src": "@SRC@"
+    }
+   ]
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.9,
+   "node": {
+    "attrs": {
+     "type": "rule"
+    },
+    "kind": "constraint",
+    "name": "No pesticides",
+    "summary": "No pesticides are used anywhere in the garden."
+   },
+   "op": "add_node",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L9-L9",
+     "quote": "No pesticides are used anywhere in the garden",
+     "src": "@SRC@"
+    }
+   ],
+   "ref": "$nopest"
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.8,
+   "edge": {
+    "dst": "plot:north-bed",
+    "rel": "constrains",
+    "src": "$nopest"
+   },
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L9-L9",
+     "quote": "No pesticides are used anywhere in the garden, on any bed.",
+     "src": "@SRC@"
+    }
+   ]
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.5,
+   "edge": {
+    "dst": "crop:mint",
+    "rel": "tends",
+    "src": "$steward"
+   },
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L5-L5",
+     "quote": "the mint in the north bed",
+     "src": "@SRC@"
+    }
+   ]
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.6,
+   "node": {
+    "kind": "dataset",
+    "name": "Seed bank",
+    "summary": "Seeds saved for next season."
+   },
+   "op": "add_node",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L6-L6",
+     "quote": "The seed bank is restocked every March.",
+     "src": "@SRC@"
+    }
+   ],
+   "ref": "$seeds"
+  },
+  {
+   "basis": "inferred",
+   "conf": 0.6,
+   "edge": {
+    "dst": "dataset:harvest-log",
+    "rel": "owns",
+    "src": "role:plot-coordinator"
+   },
+   "op": "add_edge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L6-L6",
+     "quote": "The plot coordinator reads the harvest log every Saturday",
+     "src": "@SRC@"
+    }
+   ]
+  },
+  {
+   "drop": "role:bed-captain",
+   "keep": "$steward",
+   "op": "merge",
+   "prov": [
+    {
+     "by": "agent",
+     "loc": "L4-L4",
+     "quote": "some members still say bed captains",
+     "src": "@SRC@"
+    }
+   ],
+   "reason": "The handbook says bed captain is the older name for a bed steward."
+  }
+ ],
+ "source": "@SRC@",
+ "summary": "Handbook: the bed steward role, the no-pesticides rule, four links and one merge"
+}

@@ -1,0 +1,268 @@
+{
+ "clock": "2026-09-28T12:00:00Z",
+ "data": "the kit's mini fixture (no topic repo here)",
+ "kit": {
+  "commit": null,
+  "ref": null,
+  "version": "0.1.0"
+ },
+ "method": {
+  "chars": "Characters, not bytes. A call costs its tools/call request line plus its response line; text_chars is the result text alone.",
+  "chars_per_token": 4,
+  "overhead": "Per session and profile: the tools/list response line plus the server instructions.",
+  "tokens": "Estimated: characters / 4, rounded half up. Not a tokenizer count.",
+  "transport": "The kit's bin/onto-mcp over stdio (newline-delimited JSON-RPC 2.0), started with --repo and --profile in an empty folder with a scrubbed environment; one server per profile."
+ },
+ "overhead": [
+  {
+   "instructions_chars": 612,
+   "instructions_tokens": 153,
+   "profile": "query",
+   "tokens": 1985,
+   "tools": 10,
+   "tools_list_chars": 7326,
+   "tools_list_tokens": 1832
+  },
+  {
+   "instructions_chars": 612,
+   "instructions_tokens": 153,
+   "profile": "full",
+   "tokens": 3690,
+   "tools": 18,
+   "tools_list_chars": 14148,
+   "tools_list_tokens": 3537
+  }
+ ],
+ "profile": "query",
+ "tasks": [
+  {
+   "calls": 1,
+   "chars": 757,
+   "errors": 0,
+   "found": [
+    "mini"
+   ],
+   "id": "status",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {},
+     "is_error": false,
+     "request_chars": 93,
+     "result_chars": 664,
+     "text_chars": 567,
+     "tool": "onto_status"
+    }
+   ],
+   "text_chars": 567,
+   "title": "Where the topic stands",
+   "tokens": 189
+  },
+  {
+   "calls": 1,
+   "chars": 1378,
+   "errors": 0,
+   "found": [
+    "process:watering"
+   ],
+   "id": "brief",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {
+      "subject": "process:watering"
+     },
+     "is_error": false,
+     "request_chars": 120,
+     "result_chars": 1258,
+     "text_chars": 1148,
+     "tool": "onto_brief"
+    }
+   ],
+   "text_chars": 1148,
+   "title": "Brief on process:watering",
+   "tokens": 345
+  },
+  {
+   "calls": 1,
+   "chars": 436,
+   "errors": 0,
+   "found": [
+    "process:watering"
+   ],
+   "id": "search",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {
+      "text": "Watering"
+     },
+     "is_error": false,
+     "request_chars": 110,
+     "result_chars": 326,
+     "text_chars": 232,
+     "tool": "onto_search"
+    }
+   ],
+   "text_chars": 232,
+   "title": "Search for the name of process:watering",
+   "tokens": 109
+  },
+  {
+   "calls": 1,
+   "chars": 1000,
+   "errors": 0,
+   "found": [
+    "process:watering"
+   ],
+   "id": "get",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {
+      "id": "process:watering"
+     },
+     "is_error": false,
+     "request_chars": 113,
+     "result_chars": 887,
+     "text_chars": 776,
+     "tool": "onto_get"
+    }
+   ],
+   "text_chars": 776,
+   "title": "Get process:watering",
+   "tokens": 250
+  },
+  {
+   "calls": 1,
+   "chars": 848,
+   "errors": 0,
+   "found": [
+    "process:watering"
+   ],
+   "id": "neighbors",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {
+      "depth": 2,
+      "id": "process:watering"
+     },
+     "is_error": false,
+     "request_chars": 129,
+     "result_chars": 719,
+     "text_chars": 617,
+     "tool": "onto_neighbors"
+    }
+   ],
+   "text_chars": 617,
+   "title": "Neighbors of process:watering within 2 hops",
+   "tokens": 212
+  },
+  {
+   "calls": 1,
+   "chars": 796,
+   "errors": 0,
+   "found": [
+    "process:watering"
+   ],
+   "id": "card",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {
+      "id": "process:watering"
+     },
+     "is_error": false,
+     "request_chars": 114,
+     "result_chars": 682,
+     "text_chars": 580,
+     "tool": "onto_card"
+    }
+   ],
+   "text_chars": 580,
+   "title": "Card of process:watering",
+   "tokens": 199
+  },
+  {
+   "calls": 1,
+   "chars": 1942,
+   "errors": 0,
+   "found": [
+    "goal:shared-harvest"
+   ],
+   "id": "context",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {
+      "deliverable": "brief",
+      "task": "write the brief"
+     },
+     "is_error": false,
+     "request_chars": 140,
+     "result_chars": 1802,
+     "text_chars": 1675,
+     "tool": "onto_context"
+    }
+   ],
+   "text_chars": 1675,
+   "title": "Context for writing the brief deliverable",
+   "tokens": 486
+  },
+  {
+   "calls": 1,
+   "chars": 2667,
+   "errors": 0,
+   "found": [],
+   "id": "gaps",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {},
+     "is_error": false,
+     "request_chars": 92,
+     "result_chars": 2575,
+     "text_chars": 2429,
+     "tool": "onto_gaps"
+    }
+   ],
+   "text_chars": 2429,
+   "title": "What is missing",
+   "tokens": 667
+  },
+  {
+   "calls": 1,
+   "chars": 428,
+   "errors": 0,
+   "found": [
+    "dec-20260928-keep-the-monthly-steward-rota-or-water-e-916a"
+   ],
+   "id": "decisions",
+   "missed": [],
+   "steps": [
+    {
+     "arguments": {},
+     "is_error": false,
+     "request_chars": 97,
+     "result_chars": 331,
+     "text_chars": 235,
+     "tool": "onto_decisions"
+    }
+   ],
+   "text_chars": 235,
+   "title": "Active decisions before proposing",
+   "tokens": 107
+  }
+ ],
+ "totals": {
+  "calls": 9,
+  "chars": 10252,
+  "median_calls": 1,
+  "median_tokens": 212,
+  "missed": 0,
+  "tasks": 9,
+  "text_chars": 8259,
+  "tokens": 2564
+ }
+}

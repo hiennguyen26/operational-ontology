@@ -1,0 +1,61 @@
+# The kit's checks, on the template branch and in every topic repo made from it (this file is kit-owned).
+#
+# - The kit's unit tests on Python 3.9, the kit's floor, with the standard library only (nothing is installed).
+# - The secret scan over the whole checkout.
+# - The end-to-end demo in temp folders. On the template branch there is no topic, so validate runs inside the demo.
+# - The token benchmark against the golden result, non-blocking.
+#
+# Steps 2 to 4 run even when an earlier step failed, so one run reports every check. Read-only: no secrets are
+# used, and the token can only read the repository.
+name: checks
+
+on:
+  pull_request:
+    # edited: a retargeted pull request is a base change, which the default types miss.
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: ["**"]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    # No job-level `if:`: every run of a required check must run it.
+    name: checks
+    concurrency:
+      group: checks-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    # A fixed image: ubuntu-latest moves to images without a Python 3.9 build, and topic repos cannot edit this file.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      # Actions are pinned to full commit ids (the release in the comment), so a moved tag cannot change a run.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.9"
+
+      - name: Kit tests
+        run: python -m unittest discover -s plugins/general-ontology/tests -t plugins/general-ontology
+
+      - name: Secret scan
+        if: ${{ !cancelled() }}
+        run: python3 plugins/general-ontology/bin/onto scan .
+
+      - name: End-to-end demo
+        if: ${{ !cancelled() }}
+        run: bash examples/demo.sh --check
+
+      - name: Token benchmark (non-blocking)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: python3 plugins/general-ontology/bin/onto bench --against plugins/general-ontology/tests/golden/bench.json

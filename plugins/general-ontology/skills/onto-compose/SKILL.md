@@ -1,0 +1,77 @@
+---
+name: onto-compose
+description: Compose released topic ontologies into a new one. Use when the user says "combine", "import", "compose", "bridge", "third topic", "build on the garden and kitchen topics", "update the import", "switch to v2", or when onto_status or onto_gaps show imports, pin conflicts, unbridged_import or conflict gaps. Pins each parent release with onto_import (the diff first, then confirm), resolves pin conflicts with a recorded decision, reviews same_as bridge suggestions, runs the stage C interview on how the topics meet with onto_next stage=8, and proposes meaning-level bridges and the new topic's own goal, deliverables and processes.
+allowed-tools:
+  - Bash(python3 "${CLAUDE_PLUGIN_ROOT}/bin/onto" *)
+---
+
+# Compose
+
+A composed topic imports released topics read-only, pins them by sha256, and adds its own nodes plus bridges: local
+edges between namespaces. `O` is `python3 "${CLAUDE_PLUGIN_ROOT}/bin/onto"`; prefer the `onto_*` MCP tools. Follow
+the reading rules of the **onto** skill. Imported ids are qualified (`garden/crop:tomato`) and read-only here.
+
+## 1. What is imported
+
+Call `onto_import action=status` (`O import status`): each pin with its ref, commit, whether the vendored file still
+matches (`ok` or `mismatch`), whether a newer release exists, and the bridges per namespace pair.
+
+## 2. Add each parent
+
+A parent must be released first: in its own repo, with its topic data committed,
+`onto release --write --commit --notes "..."` gives a `vN` tag.
+
+1. `onto_import action=add ns=<ns> from=<path of the parent repo> ref=vN` without `confirm` returns the diff: the
+   lock entries, the nodes that arrive, the bridges that would dangle or point at archived nodes. A topic made with
+   `onto init --path` is imported from its folder (`from=<repo>/topics/<name>`), not the repo root. The topics of one
+   repo share the `vN` tags, so name the topic's own tag or leave out `ref`. `ref` is a `vN` tag or the commit of a
+   release; a later commit is refused with the release it still carries, so import that tag or release first.
+2. Show the diff, ask, then call again with `confirm=true` (on the CLI, `O import add --ns garden --from
+   ../community-garden --ref v1` runs at once).
+3. A parent that was itself composed brings its own parents along as `via` entries; no clone of them is needed.
+   A bundled parent keeps the ns its bundling topic gave it: another `ns` for the bundler does not change it. When
+   two bundled parents collide on one ns, import only one of the bundlers, or have one of them re-import its parent
+   under another ns and release again.
+
+## 3. Pin conflicts
+
+Two paths may bring the same topic at different releases (garden v2 directly, garden v1 through another import). The
+add is refused as a pin conflict and lists the export shas, with the bridges each side would cut (dangling or
+archived ends, and `(bridge of <ns>)` for a bridge an import brings). Ask the user which one to keep, record it with
+`onto_decide` (question, options, chosen, rationale, scope `garden/`), then retry with
+`override=<decision id> keep=<ns>=<sha>`. Removing a direct pin that settled a conflict leaves the bundled releases
+in conflict again: `onto_import action=remove` then takes the same `override` and `keep`.
+
+## 4. Suggest bridges
+
+Call `onto_import action=suggest ns=<a> with=<b>`. It saves a pending proposal of `same_as` candidates between the
+two namespaces: equal names or aliases, kinds the local pack maps (`map_kinds garden/crop` to `kitchen/ingredient`),
+shared terms and sources. When two kinds mean the same thing, propose the `map_kinds` op first. Review the candidates
+with the user (**onto-review**): accept only real identities.
+
+## 5. Stage C: how the topics meet
+
+Run `onto_next stage=8` and follow `references/stage-c.md`. The core question is "Which outputs of A feed which
+processes of B?". Propose meaning-level bridges (`consumes`, `produces`, `serves`, `measures`) with quotes from the
+user's answers, and the new topic's own goal, deliverables, metrics and processes. Record the answers with
+`onto_answer apply=true` as in **onto-interview**.
+
+## 6. Read the gaps
+
+`onto_gaps` shows `conflict` gaps (members of a `same_as` class disagree on an attribute: the kit never picks a side;
+ask the user and record the answer: `onto_answer` on the conflict question records the decision, scoped
+`<id>#attrs.<field>`) and `unbridged_import` gaps (an imported kind near the goal with no bridge yet).
+
+## 7. Updates
+
+For a newer parent release: `onto_import action=update ns=<ns> ref=vN`. Show the bridges that would dangle or point at
+archived nodes first, then confirm. Fix or archive the local ones in a proposal. A bridge an import brings
+(`inherited: true`, `owner`, printed `(bridge of <owner>)`) is read-only here: keep the pin its owner was released
+with, or have the owner re-point it and release again. After such a change `onto validate` warns (W04) and
+`onto_gaps` lists it as a read-only `dangling_bridge`. `onto_import action=remove` is refused
+while bridges still use the namespace.
+
+An update re-cites open bridge proposals to the new pin. An op whose node the new release removes or archives is
+marked stale; reject it, and the pair is not recorded as rejected.
+
+A composed topic can itself be released and imported: its export bundles its parents.
